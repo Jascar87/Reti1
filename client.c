@@ -47,10 +47,10 @@ int main(int argc, char *argv[]) {
     char keyword[4]= "";
     char message[253] = "";
     struct sockaddr_in simpleServer;
-    const char MESSAGE_OK[] = "OK ";
-    const char MESSAGE_NO[] = "NO ";
-    const char MESSAGE_SI[] = "SI ";
-    const char MESSAGE_ER[] = "ER ";
+    const char MESSAGE_OK[] = "OK";
+    const char MESSAGE_NO[] = "NO";
+    const char MESSAGE_SI[] = "SI";
+    const char MESSAGE_ER[] = "ER";
 
     int end=0; /** flag per terminare il ciclo while*/
 
@@ -118,8 +118,8 @@ int main(int argc, char *argv[]) {
             if ( returnStatus < 0 ) fprintf(stderr, "Return Status = %d \n", returnStatus);
           }while(returnStatus>0);
             /**valutare il messaggio ricevuto dal server*/
-          keyword = "";
-          message = "";
+          memset(keyword, '\0', sizeof(keyword));
+          memset(message, '\0', sizeof(message));
           pointer_read=0;
           pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
           if(pointer_read<0) {
@@ -141,8 +141,8 @@ int main(int argc, char *argv[]) {
           }
 
           if(strcmp(keyword, MESSAGE_NO)==0){/**ramo in cui il numero non e' stato indovinato*/
-          keyword = "";
-          message = "";
+          memset(keyword, '\0', sizeof(keyword));
+          memset(message, '\0', sizeof(message));
           pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
           if(pointer_read<0) {
             close(simpleSocket);
