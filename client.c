@@ -4,7 +4,7 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>//errore su include
 #include <arpa/inet.h>
 
 int main(int argc, char *argv[]) {
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
         printf("%d: %s", returnStatus, buffer);
         while(end==0){
           printf("Inserire un numero da 1 a 100\n");
-          printf("tutti gli altri valori termineranno il gioco\n", );
+          printf("tutti gli altri valori termineranno il gioco\n");
           fflush(stdin);
           fscanf(stdin, "%s", buffer);
           write(simplePort, buffer, strlen(buffer)); /**inoltro il messaggio conetenuto in buffer al servver*/
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
           }
 
           else{/**casi restanti*/
-            else fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
+            fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
             end=1;
           }
 

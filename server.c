@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
 
     {
       simpleChildSocket = 0;
-      sockaddr_in clientName = { 0 };
+      struct sockaddr_in clientName = { 0 };
 
       while(simpleChildSocket<=0){
         simpleChildSocket = accept(simpleSocket,(struct sockaddr *)&clientName, &clientNameLength);
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 	/* write out our message to the client */
       write(simpleChildSocket, MESSAGE_WELCOME, strlen(MESSAGE_WELCOME));
 
-      while(tentativo++<TENTATIVI_MAX && end=0){
+      while(tentativo++<TENTATIVI_MAX && end==0){
         srand(time(NULL)); /**modifico il seme di random*/
         random = rand()%100 + 1; /**genero il numero casuale compreso tra 1 e 100*/
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
           returnStatus = read(simpleSocket, buffer, sizeof(buffer));
         }while(returnStatus>0);
 
-        valore_client=atoi(buffer)
+        valore_client=atoi(buffer);
 
         if(valore_client==random){/** ramo in cui il numero e' corretto*/
           strcpy(output, MESSAGE_CORRECT);
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
           strcpy(output, MESSAGE_MINOR);
         }
         else if (valore_client > random && valore_client <= 100){ /** ramo in cui il numero e' maggiore di random */
-          strcpy(output, MESSAGE_MAJOR)
+          strcpy(output, MESSAGE_MAJOR);
         }
         else { /** ramo in cui il numero non e' accettabile*/
           strcpy(output, MESSAGE_ERROR);
