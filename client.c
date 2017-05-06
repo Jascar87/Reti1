@@ -7,13 +7,45 @@
 //#include <unistd.h>//errore su include
 #include <arpa/inet.h>
 
-int main(int argc, char *argv[]) {
+int split_message(char* source, char* dest_keyword, char* dest_message, size_t n, char split, char terminazione, int pointer_read){
+  int split_counter=0;
+  int pointer_keyword=0;
+  int pointer_message=0;
+  int splitted=0;
+  if (source == NULL) return -1;
+  if (dest_keyword==NULL) return -2;
+  if (dest_message==NULL) return -3;
+  if (n<=0) return -4;
+  if (split<0 || split>127) return -5;
+  if (pointer_read<0 || pointer_read) return -6;
+  while(pointer_read < n){
+    if(source[pointer_read]!= terminazione){
+      if(splitted==0 && source[pointer_read]!=split){ /**ramo in cui non si ha ancora splittato o non ho travato il carratere di split*/
+        dest_keyword[pointer_keyword++]=source[pointer_read];
+        split_counter++;
+      }
+      else if (splitted == 0){/**ramo in cui ho trovato il carratteri di split per la prima volta*/
+         splitted=1;
+         split_counter++;
+         dest_keyword[pointer_keyword]='\0';
+       }
+      else dest_message[pointer_message++]=source[pointer_read]; /**ramo in cui e' gia' stato splittato il messaggio*/
+    }
+    else dest_message[pointer_message]='\0'; /**ramo in cui ho incontrato il carattere di terminazione*/
+    pointer_read++;
+  }
 
+  return split_counter;
+}
+
+int main(int argc, char *argv[]) {
+    int pointer_read=0;
     int simpleSocket = 0;
     int simplePort = 0;
     int returnStatus = 0;
     char buffer[256] = "";
     char keyword[4]= "";
+    char message[253] = "";
     struct sockaddr_in simpleServer;
     const char MESSAGE_OK[] = "OK ";
     const char MESSAGE_NO[] = "NO ";
@@ -65,9 +97,15 @@ int main(int argc, char *argv[]) {
     /* get the message from the server   */
     returnStatus = read(simpleSocket, buffer, sizeof(buffer));/** per leggere il messa di benvenuto*/
     if ( returnStatus > 0 ) {
-      read(buffer, keyword, sizeof(keyword));
+      pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
+      if(pointer_read<0) {
+        close(simpleSocket);
+        fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
+        return -1;
+      }
+
       if(strcmp(keyword, MESSAGE_OK)==0){/**ramo in cui il server ha risposto con il messaggio di benvenuto in modo corretto*/
-        printf("%d: %s", returnStatus, buffer);
+        printf("%d: %s\n", returnStatus, message);
         while(end==0){
           printf("Inserire un numero da 1 a 100\n");
           printf("tutti gli altri valori termineranno il gioco\n");
@@ -79,24 +117,38 @@ int main(int argc, char *argv[]) {
             returnStatus = read(simpleSocket, buffer, sizeof(buffer));
             if ( returnStatus < 0 ) fprintf(stderr, "Return Status = %d \n", returnStatus);
           }while(returnStatus>0);
-
             /**valutare il messaggio ricevuto dal server*/
-          read(buffer, keyword, sizeof(keyword));
+          keyword = "";
+          message = "";
+          pointer_read=0;
+          pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
+          if(pointer_read<0) {
+            close(simpleSocket);
+            fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
+            return -1;
+          }
           if(strcmp(keyword, MESSAGE_SI)==0){/**ramo in cui il numero è stato indovinato*/
             end=1;
-            printf("%s", buffer);
+            printf("%s\n", message);
             printf("Sono il client migliore che ci sia, ti ho fatto indovinare\n");
           }
 
           if(strcmp(keyword, MESSAGE_ER)==0){/**ramo in cui ci sono stati errori o si sono superati i tentativi massimi*/
             end=1;
-            printf("%s", buffer);
+            printf("%s\n", message);
             printf("Se il valore inserito era errato, il server se ne e' accorto\n");
             printf("Se invece non hai indovinato, non e' colpa mia, io ho svolto il mio compito corretamente\n");
           }
 
           if(strcmp(keyword, MESSAGE_NO)==0){/**ramo in cui il numero non e' stato indovinato*/
-            read(buffer, keyword, 1);
+          keyword = "";
+          message = "";
+          pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
+          if(pointer_read<0) {
+            close(simpleSocket);
+            fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
+            return -1;
+          }
             if(strcmp(keyword, "-")==0) printf("il numero inserito e' MAGGIORE del numero da indovinare \n");/**il numero inserito e' maggiore del numero da indovinare*/
             if(strcmp(keyword, "+")==0) printf("il numero inserito e' MINORE del numero da indovinare \n");/**il numero inserito e' minore del numero da indovinare*/
             else {/**la parola chiave inviata non e' codificata correttamente*/
