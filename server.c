@@ -7,12 +7,12 @@
 #include <unistd.h>
 #define TENTATIVI_MAX 7
 
-const char MESSAGE_WELCOME[] = "OK benvenuti nel server GIAVAZZI - PIDELLO\n";
+const char MESSAGE_WELCOME[] = "OK Benvenuti nel server GIAVAZZI - PIDELLO\n";
 const char MESSAGE_MINOR[] = "NO +\n";
 const char MESSAGE_MAJOR[] = "NO -\n";
 const char MESSAGE_CORRECT[] = "SI complimenti HAI INDOVINATO !!!\n";
-const char MESSAGE_ERROR[] = "ER valore NON ACCETTABILE dal server\n";
-const char MESSAGE_ERROR_TENTATIVI[] = "ER numero di tentativi esauriti, RITENTA sarai piu' fortunato\n";
+const char MESSAGE_ERROR[] = "ER Valore NON ACCETTABILE dal server\n";
+const char MESSAGE_ERROR_TENTATIVI[] = "ER Numero di tentativi esauriti, RITENTA sarai piu' fortunato\n";
 
 int main(int argc, char *argv[]) {
     int simpleSocket = 0;
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     int returnStatus = 0;
     struct sockaddr_in simpleServer;
     int random=0;
-    int tentativo=0;
+    int tentativo=1;
     int valore_client=0;/**variabile in cui viene registrato il numero fornito dal cliente come tentativo*/
     int i=0;
     int end=0; /**flag per intrrompere il ciclo di verifica del valore fornito dal client se indovinato o se il valore non e' accettabile*/

@@ -4,7 +4,7 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>//errore su include
+#include <unistd.h>
 #include <arpa/inet.h>
 
 int split_message(char* source, char* dest_keyword, char* dest_message, size_t n, char split, char terminazione, int pointer_read){
@@ -148,8 +148,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
             return -1;
           }
-            if(strcmp(keyword, "-")==0) printf("il numero inserito e' MAGGIORE del numero da indovinare \n");/**il numero inserito e' maggiore del numero da indovinare*/
-            else if(strcmp(keyword, "+")==0) printf("il numero inserito e' MINORE del numero da indovinare \n");/**il numero inserito e' minore del numero da indovinare*/
+            if(strcmp(keyword, "-")==0) printf("Il numero inserito e' MAGGIORE del numero da indovinare \n");/**il numero inserito e' maggiore del numero da indovinare*/
+            else if(strcmp(keyword, "+")==0) printf("Il numero inserito e' MINORE del numero da indovinare \n");/**il numero inserito e' minore del numero da indovinare*/
             else {/**la parola chiave inviata non e' codificata correttamente*/
               fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
               end=1;
