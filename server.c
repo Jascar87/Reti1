@@ -103,30 +103,36 @@ int main(int argc, char *argv[]) {
         returnStatus = read(simpleChildSocket, buffer, sizeof(buffer));
         printf("4\n");//debug
         printf("returnStatus: %d\n", returnStatus);
+        printf("%s\n", buffer);
         valore_client=atoi(buffer);
+        if (returnStatus > 0){
 
-        if(valore_client==random){/** ramo in cui il numero e' corretto*/
-          printf("ramo corretto\n");//debug
-          strcpy(output, MESSAGE_CORRECT);
+          if(valore_client==random){/** ramo in cui il numero e' corretto*/
+            printf("ramo corretto\n");//debug
+            strcpy(output, MESSAGE_CORRECT);
+            end=1;
+          }
+          else if(valore_client> 0 && valore_client<random){/** ramo in cui il numero e' minore di random*/
+            printf("ramo minore\n");//debug
+            strcpy(output, MESSAGE_MINOR);
+          }
+          else if (valore_client > random && valore_client <= 100){ /** ramo in cui il numero e' maggiore di random */
+            strcpy(output, MESSAGE_MAJOR);
+            printf("ramo maggiore\n");//debug
+          }
+          else { /** ramo in cui il numero non e' accettabile*/
+            strcpy(output, MESSAGE_ERROR);
+            printf("ramo valore non accettabile\n");//debug
+            end=1;
+          }
+          printf("5\n");
+          write(simpleChildSocket, output, strlen(output));
+        }
+        else{
           end=1;
+          printf("connessione interrota con il client o problemi con la read\n");
         }
-        else if(valore_client> 0 && valore_client<random){/** ramo in cui il numero e' minore di random*/
-          printf("ramo minore\n");//debug
-          strcpy(output, MESSAGE_MINOR);
-        }
-        else if (valore_client > random && valore_client <= 100){ /** ramo in cui il numero e' maggiore di random */
-          strcpy(output, MESSAGE_MAJOR);
-          printf("ramo maggiore\n");//debug
-        }
-        else { /** ramo in cui il numero non e' accettabile*/
-          strcpy(output, MESSAGE_ERROR);
-          printf("ramo valore non accettabile\n");//debug
-          end=1;
-        }
-        printf("5\n");
-        write(simpleChildSocket, output, strlen(output));
       }
-
       if(tentativo==TENTATIVI_MAX){
         printf("tentativi massimi raggiunti\n");
         write(simpleChildSocket, MESSAGE_ERROR_TENTATIVI, strlen(MESSAGE_ERROR_TENTATIVI));
