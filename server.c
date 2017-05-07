@@ -104,6 +104,11 @@ int main(int argc, char *argv[]) {
         //printf("returnStatus: %d\n", returnStatus);//debug
         //printf("%s\n", buffer);//debug
         valore_client=atoi(buffer);
+        if(tentativo==TENTATIVI_MAX){
+          end = 1;
+          //printf("tentativi massimi raggiunti\n");//debug
+          strcpy(output, MESSAGE_ERROR_TENTATIVI);
+        }
         if (returnStatus > 0){
 
           if(valore_client==random){/** ramo in cui il numero e' corretto*/
