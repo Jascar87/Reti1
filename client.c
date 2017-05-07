@@ -4,11 +4,11 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <unistd.h>//errore su include
+#include <unistd.h>//errore su include
 #include <arpa/inet.h>
 
 int split_message(char* source, char* dest_keyword, char* dest_message, size_t n, char split, char terminazione, int pointer_read){
-  int split_counter=0;
+  int split_counter=pointer_read;
   int pointer_keyword=0;
   int pointer_message=0;
   int splitted=0;
@@ -17,7 +17,8 @@ int split_message(char* source, char* dest_keyword, char* dest_message, size_t n
   if (dest_message==NULL) return -3;
   if (n<=0) return -4;
   if (split<0 || split>127) return -5;
-  if (pointer_read<0 || pointer_read>n) return -6;
+  if (pointer_read<0 ) return -6;
+  n+=pointer_read;
   while(pointer_read < n){
     if(source[pointer_read]!= terminazione){
       if(splitted==0 && source[pointer_read]!=split){ /**ramo in cui non si ha ancora splittato o non ho travato il carratere di split*/
@@ -34,7 +35,6 @@ int split_message(char* source, char* dest_keyword, char* dest_message, size_t n
     else dest_message[pointer_message]='\0'; /**ramo in cui ho incontrato il carattere di terminazione*/
     pointer_read++;
   }
-
   return split_counter;
 }
 
@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
     int simplePort = 0;
     int returnStatus = 0;
     char buffer[256] = "";
+    char buffer_in[32] ="";
     char keyword[4]= "";
     char message[253] = "";
     struct sockaddr_in simpleServer;
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* get the message from the server   */
-    returnStatus = read(simpleSocket, buffer, sizeof(buffer));/** per leggere il messa di benvenuto*/
+    returnStatus = read(simpleSocket, buffer, sizeof(buffer));/** per leggere il messaggio di benvenuto*/
     if ( returnStatus > 0 ) {
       pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
       if(pointer_read<0) {
@@ -110,8 +111,9 @@ int main(int argc, char *argv[]) {
           printf("Inserire un numero da 1 a 100\n");
           printf("tutti gli altri valori termineranno il gioco\n");
           fflush(stdin);
-          fscanf(stdin, "%s", buffer);
-          write(simpleSocket, buffer, strlen(buffer)); /**inoltro il messaggio conetenuto in buffer al servver*/
+          fscanf(stdin, "%s", buffer_in);
+          write(simpleSocket, buffer_in, strlen(buffer_in)); /**inoltro il messaggio conetenuto in buffer al servver*/
+          memset(buffer, '\0', sizeof(buffer));
           returnStatus = read(simpleSocket, buffer, sizeof(buffer));
           if ( returnStatus < 0 ) fprintf(stderr, "Return Status = %d \n", returnStatus);
             /**valutare il messaggio ricevuto dal server*/
@@ -134,7 +136,7 @@ int main(int argc, char *argv[]) {
             end=1;
             printf("%s\n", message);
             printf("Se il valore inserito era errato, il server se ne e' accorto\n");
-            printf("Se invece non hai indovinato, non e' colpa mia, io ho svolto il mio compito corretamente\n");
+            printf("Se invece non hai indovinato, non e' colpa mia perche' ho svolto il mio compito corretamente\n");
           }
 
           if(strcmp(keyword, MESSAGE_NO)==0){/**ramo in cui il numero non e' stato indovinato*/
@@ -147,9 +149,8 @@ int main(int argc, char *argv[]) {
             return -1;
           }
             if(strcmp(keyword, "-")==0) printf("il numero inserito e' MAGGIORE del numero da indovinare \n");/**il numero inserito e' maggiore del numero da indovinare*/
-            if(strcmp(keyword, "+")==0) printf("il numero inserito e' MINORE del numero da indovinare \n");/**il numero inserito e' minore del numero da indovinare*/
+            else if(strcmp(keyword, "+")==0) printf("il numero inserito e' MINORE del numero da indovinare \n");/**il numero inserito e' minore del numero da indovinare*/
             else {/**la parola chiave inviata non e' codificata correttamente*/
-              printf("1\n");
               fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
               end=1;
             }
@@ -159,6 +160,7 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
             end=1;
           }
+          memset(buffer_in, '\0', sizeof(buffer_in));
         }
       }
       else fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword); /**ramo in cui la parola chiave non risulta corretta, viene mandata in output*/

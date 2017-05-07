@@ -92,54 +92,60 @@ int main(int argc, char *argv[]) {
 
         /* handle the new connection request  */
 	/* write out our message to the client */
-      printf("2\n");
       write(simpleChildSocket, MESSAGE_WELCOME, strlen(MESSAGE_WELCOME));
-      printf("3\n");
       srand(time(NULL)); /**modifico il seme di random*/
       random = rand()%100 + 1; /**genero il numero casuale compreso tra 1 e 100*/
-      printf("Numero da indovinare : %d\n", random);
-      while(tentativo++<TENTATIVI_MAX && end==0){
-        printf("Inizio ciclo dei tentativi con tentativo %d\n", tentativo);
+      //printf("Numero da indovinare : %d\n", random);//debug
+      while(end==0){
+        //printf("Inizio ciclo dei tentativi con tentativo %d\n", tentativo);//debug
+        memset(buffer, '\0', sizeof(buffer));
         returnStatus = read(simpleChildSocket, buffer, sizeof(buffer));
-        printf("4\n");//debug
-        printf("returnStatus: %d\n", returnStatus);
-        printf("%s\n", buffer);
+        //printf("4\n");//debug
+        //printf("returnStatus: %d\n", returnStatus);//debug
+        //printf("%s\n", buffer);//debug
         valore_client=atoi(buffer);
         if (returnStatus > 0){
 
           if(valore_client==random){/** ramo in cui il numero e' corretto*/
-            printf("ramo corretto\n");//debug
+            //printf("ramo corretto\n");//debug
             strcpy(output, MESSAGE_CORRECT);
             end=1;
           }
           else if(valore_client> 0 && valore_client<random){/** ramo in cui il numero e' minore di random*/
-            printf("ramo minore\n");//debug
-            strcpy(output, MESSAGE_MINOR);
+            //printf("ramo minore\n");//debug
+            if(tentativo==TENTATIVI_MAX){
+              end = 1;
+              //printf("tentativi massimi raggiunti\n");//debug
+              strcpy(output, MESSAGE_ERROR_TENTATIVI);
+            }
+            else strcpy(output, MESSAGE_MINOR);
           }
           else if (valore_client > random && valore_client <= 100){ /** ramo in cui il numero e' maggiore di random */
-            strcpy(output, MESSAGE_MAJOR);
-            printf("ramo maggiore\n");//debug
+            //printf("ramo maggiore\n");//debug
+            if(tentativo==TENTATIVI_MAX){
+              end = 1;
+              //printf("tentativi massimi raggiunti\n");//debug
+              strcpy(output, MESSAGE_ERROR_TENTATIVI);
+            }
+            else strcpy(output, MESSAGE_MAJOR);
+
           }
           else { /** ramo in cui il numero non e' accettabile*/
             strcpy(output, MESSAGE_ERROR);
-            printf("ramo valore non accettabile\n");//debug
+            //printf("ramo valore non accettabile\n");//debug
             end=1;
           }
-          printf("5\n");
           write(simpleChildSocket, output, strlen(output));
         }
         else{
           end=1;
-          printf("connessione interrota con il client o problemi con la read\n");
+          //printf("connessione interrota con il client o problemi con la read\n");//debug
         }
-      }
-      if(tentativo==TENTATIVI_MAX){
-        printf("tentativi massimi raggiunti\n");
-        write(simpleChildSocket, MESSAGE_ERROR_TENTATIVI, strlen(MESSAGE_ERROR_TENTATIVI));
+        tentativo++;
       }
       tentativo=0;
       end=0;
-      printf("7\n");
+      //printf("numero massimo di tentativi o errore o indovinato\n");//debug
       close(simpleChildSocket);
     }
 
