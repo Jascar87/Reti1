@@ -109,10 +109,10 @@ int main(int argc, char *argv[]) {
       }
 
       if(strcmp(keyword, MESSAGE_OK)==0){/**ramo in cui il server ha risposto con il messaggio di benvenuto in modo corretto*/
-        printf("%d: %s\n", returnStatus, message);
+        printf(RED "%s\n" RESET, message);
         while(end==0){
           printf(YELLOW "Inserire un numero da 1 a 100\n" RESET);
-          printf("tutti gli altri valori termineranno il gioco\n");
+          printf(YELLOW "tutti gli altri valori termineranno il gioco\n" RESET);
           fflush(stdin);
           fscanf(stdin, "%s", buffer_in);
           write(simpleSocket, buffer_in, strlen(buffer_in)); /**inoltro il messaggio conetenuto in buffer al servver*/
@@ -131,15 +131,15 @@ int main(int argc, char *argv[]) {
           }
           if(strcmp(keyword, MESSAGE_SI)==0){/**ramo in cui il numero è stato indovinato*/
             end=1;
-            printf("%s\n", message);
-            printf("Sono il client migliore che ci sia, ti ho fatto indovinare\n");
+            printf(RED "%s\n" RESET, message);
+            printf(YELLOW "Sono il client migliore che ci sia, ti ho fatto indovinare\n" RESET);
           }
 
           if(strcmp(keyword, MESSAGE_ER)==0){/**ramo in cui ci sono stati errori o si sono superati i tentativi massimi*/
             end=1;
-            printf("%s\n", message);
-            printf("Se il valore inserito era errato, il server se ne e' accorto\n");
-            printf("Se invece non hai indovinato, non e' colpa mia perche' ho svolto il mio compito corretamente\n");
+            printf(RED "%s\n" RESET, message);
+            printf(YELLOW "Se il valore inserito era errato, il server se ne e' accorto\n" RESET);
+            printf(YELLOW "Se invece non hai indovinato, non e' colpa mia perche' ho svolto il mio compito corretamente\n" RESET);
           }
 
           if(strcmp(keyword, MESSAGE_NO)==0){/**ramo in cui il numero non e' stato indovinato*/
@@ -151,8 +151,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
             return -1;
           }
-            if(strcmp(keyword, "-")==0) printf("Il numero inserito e' MAGGIORE del numero da indovinare \n");/**il numero inserito e' maggiore del numero da indovinare*/
-            else if(strcmp(keyword, "+")==0) printf("Il numero inserito e' MINORE del numero da indovinare \n");/**il numero inserito e' minore del numero da indovinare*/
+            if(strcmp(keyword, "-")==0) printf(YELLOW "Il numero inserito e' MAGGIORE del numero da indovinare \n" RESET);/**il numero inserito e' maggiore del numero da indovinare*/
+            else if(strcmp(keyword, "+")==0) printf(YELLOW "Il numero inserito e' MINORE del numero da indovinare \n" RESET);/**il numero inserito e' minore del numero da indovinare*/
             else {/**la parola chiave inviata non e' codificata correttamente*/
               fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
               end=1;
