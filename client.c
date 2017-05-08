@@ -6,9 +6,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#define RED "\033[31m"
-#define YELLOW "\033[33;1m"
-#define RESET "\033[0m"
+#define RED "\033[31;1m" /**stampa errori*/
+#define YELLOW "\033[33;1m" /**stampa client*/
+#define MAGENTA "\033[35;1m" /**stampa server*/
+#define RESET "\033[0m" /**valore di default delle stampe*/
 
 int split_message(char* source, char* dest_keyword, char* dest_message, size_t n, char split, char terminazione, int pointer_read){
   int split_counter=pointer_read;
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
     int end=0; /** flag per terminare il ciclo while*/
 
     if (3 != argc) {
-      fprintf(stderr, "Usage: %s <server> <port>\n", argv[0]);
+      fprintf(stderr,RED "Usage: %s <server> <port>\n" RESET, argv[0]);
       exit(1);
     }
 
@@ -67,11 +68,11 @@ int main(int argc, char *argv[]) {
     simpleSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     if (simpleSocket == -1) {
-      fprintf(stderr, "Could not create a socket!\n");
+      fprintf(stderr, RED "Could not create a socket!\n" RESET);
       exit(1);
     }
     else {
-	    fprintf(stderr, "Socket created!\n");
+	    fprintf(stderr,YELLOW "Socket created!\n" RESET);
     }
 
     /* retrieve the port number for connecting */
@@ -90,10 +91,10 @@ int main(int argc, char *argv[]) {
     returnStatus = connect(simpleSocket, (struct sockaddr *)&simpleServer, sizeof(simpleServer));
 
     if (returnStatus == 0) {
-	    fprintf(stderr, "Connect successful!\n");
+	    fprintf(stderr,YELLOW "Connect successful!\n" RESET);
     }
     else {
-      fprintf(stderr, "Could not connect to address!\n");
+      fprintf(stderr,RED "Could not connect to address!\n" RESET);
       close(simpleSocket);
       exit(1);
     }
@@ -104,12 +105,12 @@ int main(int argc, char *argv[]) {
       pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
       if(pointer_read<0) {
         close(simpleSocket);
-        fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
+        fprintf(stderr, RED "ERRORE FUNZION DI SPLIT = %d \n" RESET, pointer_read);
         return -1;
       }
 
       if(strcmp(keyword, MESSAGE_OK)==0){/**ramo in cui il server ha risposto con il messaggio di benvenuto in modo corretto*/
-        printf(RED "%s\n" RESET, message);
+        printf(MAGENTA "%s\n" RESET, message);
         while(end==0){
           printf(YELLOW "Inserire un numero da 1 a 100\n" RESET);
           printf(YELLOW "tutti gli altri valori termineranno il gioco\n" RESET);
@@ -118,7 +119,7 @@ int main(int argc, char *argv[]) {
           write(simpleSocket, buffer_in, strlen(buffer_in)); /**inoltro il messaggio conetenuto in buffer al servver*/
           memset(buffer, '\0', sizeof(buffer));
           returnStatus = read(simpleSocket, buffer, sizeof(buffer));
-          if ( returnStatus < 0 ) fprintf(stderr, "Return Status = %d \n", returnStatus);
+          if ( returnStatus < 0 ) fprintf(stderr, RED "Return Status = %d \n" RESET, returnStatus);
             /**valutare il messaggio ricevuto dal server*/
           memset(keyword, '\0', sizeof(keyword));
           memset(message, '\0', sizeof(message));
@@ -126,18 +127,18 @@ int main(int argc, char *argv[]) {
           pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
           if(pointer_read<0) {
             close(simpleSocket);
-            fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
+            fprintf(stderr, RED "ERRORE FUNZION DI SPLIT = %d \n" RESET, pointer_read);
             return -1;
           }
           if(strcmp(keyword, MESSAGE_SI)==0){/**ramo in cui il numero è stato indovinato*/
             end=1;
-            printf(RED "%s\n" RESET, message);
+            printf(MAGENTA "%s\n" RESET, message);
             printf(YELLOW "Sono il client migliore che ci sia, ti ho fatto indovinare\n" RESET);
           }
 
           if(strcmp(keyword, MESSAGE_ER)==0){/**ramo in cui ci sono stati errori o si sono superati i tentativi massimi*/
             end=1;
-            printf(RED "%s\n" RESET, message);
+            printf(MAGENTA "%s\n" RESET, message);
             printf(YELLOW "Se il valore inserito era errato, il server se ne e' accorto\n" RESET);
             printf(YELLOW "Se invece non hai indovinato, non e' colpa mia perche' ho svolto il mio compito corretamente\n" RESET);
           }
@@ -148,28 +149,28 @@ int main(int argc, char *argv[]) {
           pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
           if(pointer_read<0) {
             close(simpleSocket);
-            fprintf(stderr, "ERRORE FUNZION DI SPLIT = %d \n", pointer_read);
+            fprintf(stderr,RED "ERRORE FUNZION DI SPLIT = %d \n" RESET, pointer_read);
             return -1;
           }
             if(strcmp(keyword, "-")==0) printf(YELLOW "Il numero inserito e' MAGGIORE del numero da indovinare \n" RESET);/**il numero inserito e' maggiore del numero da indovinare*/
             else if(strcmp(keyword, "+")==0) printf(YELLOW "Il numero inserito e' MINORE del numero da indovinare \n" RESET);/**il numero inserito e' minore del numero da indovinare*/
             else {/**la parola chiave inviata non e' codificata correttamente*/
-              fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
+              fprintf(stderr, RED "Parola chiave trasmessa : %s \n" RESET, keyword);
               end=1;
             }
           }
 
           else{/**casi restanti*/
-            fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword);
+            fprintf(stderr, RED "Parola chiave trasmessa : %s \n" RESET, keyword);
             end=1;
           }
           memset(buffer_in, '\0', sizeof(buffer_in));
         }
       }
-      else fprintf(stderr, "Parola chiave trasmessa : %s \n", keyword); /**ramo in cui la parola chiave non risulta corretta, viene mandata in output*/
+      else fprintf(stderr, RED "Parola chiave trasmessa : %s \n" RESET, keyword); /**ramo in cui la parola chiave non risulta corretta, viene mandata in output*/
     }
     else {/**ramo in cui ci sono stati problemi con la read*/
-        fprintf(stderr, "Return Status = %d \n", returnStatus);
+        fprintf(stderr,RED "Return Status = %d \n" RESET, returnStatus);
     }
 
     close(simpleSocket);
