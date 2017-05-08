@@ -6,6 +6,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#define RED "\033[31m"
+#define YELLOW "\033[33;1m"
+#define RESET "\033[0m"
 
 int split_message(char* source, char* dest_keyword, char* dest_message, size_t n, char split, char terminazione, int pointer_read){
   int split_counter=pointer_read;
@@ -108,7 +111,7 @@ int main(int argc, char *argv[]) {
       if(strcmp(keyword, MESSAGE_OK)==0){/**ramo in cui il server ha risposto con il messaggio di benvenuto in modo corretto*/
         printf("%d: %s\n", returnStatus, message);
         while(end==0){
-          printf("Inserire un numero da 1 a 100\n");
+          printf(YELLOW "Inserire un numero da 1 a 100\n" RESET);
           printf("tutti gli altri valori termineranno il gioco\n");
           fflush(stdin);
           fscanf(stdin, "%s", buffer_in);
