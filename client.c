@@ -11,6 +11,20 @@
 #define MAGENTA "\033[35;1m" /**stampa server*/
 #define RESET "\033[0m" /**valore di default delle stampe*/
 
+/**
+ * @brief Gestisce i messaggi da inviare al Client
+ *
+ * @param source il messaggio da inviare
+ * @param dest_keyword 
+ * @param dest_message
+ * @param n
+ * @param split
+ * @param terminazione
+ * @param pointer_read
+ * @return split_counter
+ *
+ */
+
 int split_message(char* source, char* dest_keyword, char* dest_message, size_t n, char split, char terminazione, int pointer_read){
   int split_counter=pointer_read;
   int pointer_keyword=0;
