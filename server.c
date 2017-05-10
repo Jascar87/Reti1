@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
     int i=0;
     int end=0; /**flag per intrrompere il ciclo di verifica del valore fornito dal client se indovinato o se il valore non e' accettabile*/
     char buffer[32] = "";
+    char compare[32] = "";
     char output[64] = "";
 
     if (2 != argc) {
@@ -104,6 +105,11 @@ int main(int argc, char *argv[]) {
         //printf("returnStatus: %d\n", returnStatus);//debug
         //printf("%s\n", buffer);//debug
         valore_client=atoi(buffer);
+        sprintf(compare, "%d", valore_client);
+        if(strcmp(compare, buffer) != 0){
+          write(simpleChildSocket, MESSAGE_ERROR, strlen(MESSAGE_ERROR));
+          end = 1;
+        }
 
         if (returnStatus > 0){
           if(tentativo==TENTATIVI_MAX){
