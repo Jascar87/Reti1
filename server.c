@@ -100,6 +100,7 @@ int main(int argc, char *argv[]) {
       while(end==0){
         //printf("Inizio ciclo dei tentativi con tentativo %d\n", tentativo);//debug
         memset(buffer, '\0', sizeof(buffer));
+        memset(compare, '\0', sizeof(compare));
         returnStatus = read(simpleChildSocket, buffer, sizeof(buffer));
         //printf("4\n");//debug
         //printf("returnStatus: %d\n", returnStatus);//debug

@@ -15,7 +15,7 @@
  * @brief Gestisce i messaggi da inviare al Client
  *
  * @param source il messaggio da inviare
- * @param dest_keyword 
+ * @param dest_keyword
  * @param dest_message
  * @param n
  * @param split
@@ -166,8 +166,8 @@ int main(int argc, char *argv[]) {
             fprintf(stderr,RED "ERRORE FUNZION DI SPLIT = %d \n" RESET, pointer_read);
             return -1;
           }
-            if(strcmp(keyword, "-")==0) printf(YELLOW "Il numero inserito e' MAGGIORE del numero da indovinare \n" RESET);/**il numero inserito e' maggiore del numero da indovinare*/
-            else if(strcmp(keyword, "+")==0) printf(YELLOW "Il numero inserito e' MINORE del numero da indovinare \n" RESET);/**il numero inserito e' minore del numero da indovinare*/
+            if(strcmp(keyword, "-")==0) printf(YELLOW "Inserire un numero MINORE \n" RESET);/**il numero inserito e' maggiore del numero da indovinare*/
+            else if(strcmp(keyword, "+")==0) printf(YELLOW "Inserire un numero MAGGIORE \n" RESET);/**il numero inserito e' minore del numero da indovinare*/
             else {/**la parola chiave inviata non e' codificata correttamente*/
               fprintf(stderr, RED "Parola chiave trasmessa : %s \n" RESET, keyword);
               end=1;
