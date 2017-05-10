@@ -7,10 +7,10 @@
 #include <unistd.h>
 #define TENTATIVI_MAX 7
 
-const char MESSAGE_WELCOME[] = "OK Benvenuti nel server GIAVAZZI - PIDELLO\n";
+const char MESSAGE_WELCOME[] = "OK Benvenuto nel server GIAVAZZI - PIDELLO, hai massimo 7 tentativi\n";
 const char MESSAGE_MINOR[] = "NO +\n";
 const char MESSAGE_MAJOR[] = "NO -\n";
-const char MESSAGE_CORRECT[] = "SI complimenti HAI INDOVINATO !!!\n";
+const char MESSAGE_CORRECT[] = "SI complimenti HAI INDOVINATO!!!\n";
 const char MESSAGE_ERROR[] = "ER Valore NON ACCETTABILE dal server\n";
 const char MESSAGE_ERROR_TENTATIVI[] = "ER Numero di tentativi esauriti, RITENTA sarai piu' fortunato\n";
 
