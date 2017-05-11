@@ -12,16 +12,16 @@
 #define RESET "\033[0m" /**valore di default delle stampe*/
 
 /**
- * @brief Gestisce i messaggi da inviare al Client
+ * @brief Gestisce i messaggi ricevuti dal server per separare le parole chiave dal messaggio
  *
- * @param source il messaggio da inviare
- * @param dest_keyword
- * @param dest_message
- * @param n
- * @param split
- * @param terminazione
- * @param pointer_read
- * @return split_counter
+ * @param source il messaggio ricevuto dal server
+ * @param dest_keyword puntatore alla stringa di destinazione della parola chiave
+ * @param dest_message puntatore alla stringa di destinazione del messaggio
+ * @param n dimensione della stringa
+ * @param split carattere di split
+ * @param terminazione carattere di terminazione
+ * @param pointer_read indice da cui partire a scansionare source
+ * @return split_counter contatore chesalva l'indice in cui si e' effettuato lo split
  *
  */
 
@@ -130,6 +130,8 @@ int main(int argc, char *argv[]) {
           printf(YELLOW "tutti gli altri valori termineranno il gioco\n" RESET);
           fflush(stdin);
           fscanf(stdin, "%s", buffer_in);
+          buffer_in[strlen(buffer_in)]='\n';
+          buffer_in[strlen(buffer_in)]='\0';
           write(simpleSocket, buffer_in, strlen(buffer_in)); /**inoltro il messaggio conetenuto in buffer al servver*/
           memset(buffer, '\0', sizeof(buffer));
           returnStatus = read(simpleSocket, buffer, sizeof(buffer));

@@ -102,6 +102,7 @@ int main(int argc, char *argv[]) {
         memset(buffer, '\0', sizeof(buffer));
         memset(compare, '\0', sizeof(compare));
         returnStatus = read(simpleChildSocket, buffer, sizeof(buffer));
+        buffer[strlen(buffer)-1]='\0';
         //printf("4\n");//debug
         //printf("returnStatus: %d\n", returnStatus);//debug
         //printf("%s\n", buffer);//debug
