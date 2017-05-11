@@ -108,12 +108,12 @@ int main(int argc, char *argv[]) {
         //printf("%s\n", buffer);//debug
         valore_client=atoi(buffer);
         sprintf(compare, "%d", valore_client);
-        if(strcmp(compare, buffer) != 0){
+        if(strcmp(compare, buffer) != 0 || valore_client>100 ||valore_client<1){
           write(simpleChildSocket, MESSAGE_ERROR, strlen(MESSAGE_ERROR));
           end = 1;
         }
 
-        if (returnStatus > 0){
+        if (returnStatus > 0 && end != 1){
           if(tentativo==TENTATIVI_MAX){
               end = 1;
               //printf("tentativi massimi raggiunti\n");//debug
@@ -143,11 +143,6 @@ int main(int argc, char *argv[]) {
             }
             else strcpy(output, MESSAGE_MAJOR);
 
-          }
-          else { /** ramo in cui il numero non e' accettabile*/
-            strcpy(output, MESSAGE_ERROR);
-            //printf("ramo valore non accettabile\n");//debug
-            end=1;
           }
           write(simpleChildSocket, output, strlen(output));
         }
