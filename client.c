@@ -21,7 +21,7 @@
  * @param split carattere di split
  * @param terminazione carattere di terminazione
  * @param pointer_read indice da cui partire a scansionare source
- * @return split_counter contatore chesalva l'indice in cui si e' effettuato lo split
+ * @return split_counter contatore che salva l'indice in cui si e' effettuato lo split
  *
  */
 
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
       pointer_read = split_message(buffer, keyword, message, (strlen(buffer)-pointer_read), ' ', '\n', pointer_read);
       if(pointer_read<0) {
         close(simpleSocket);
-        fprintf(stderr, RED "ERRORE FUNZION DI SPLIT = %d \n" RESET, pointer_read);
+        fprintf(stderr, RED "ERRORE FUNZIONE DI SPLIT = %d \n" RESET, pointer_read);
         return -1;
       }
 
